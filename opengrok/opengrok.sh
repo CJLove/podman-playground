@@ -9,6 +9,18 @@ ACCT=opengrok
 ACCT_UID=$(id -u $ACCT)
 ACCT_GID=$(id -g $ACCT)
 
+# If necessary, set XDG_RUNTIME_DIR and DBUS_SESSION_BUS_ADDRESS to fix `systemctl --user`
+grep -q XDG_RUNTIME_DIR $HOME/.bash_profile
+if [ $? -ne 0 ]; then
+	echo "XDG_RUNTIME_DIR=/run/user/`id -u`" >> $HOME/.bash_profile
+	export XDG_RUNTIME_DIR=/run/user/`id -u`
+fi
+grep -q DBUS_SESSION_BUS_ADDRESS $HOME/.bash_profile
+if [ $? -ne 0 ]; then
+	echo "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/`id -u`/bus"
+	export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/`id -u`/bus
+fi
+
 # Validate that user account is set up for podman
 echo "Validating account $ACCT..."
 grep -i $ACCT /etc/subuid

@@ -12,6 +12,18 @@ ACCT=wiki
 ACCT_UID=$(id -u $ACCT)
 ACCT_GID=$(id -g $ACCT)
 
+# If necessary, set XDG_RUNTIME_DIR and DBUS_SESSION_BUS_ADDRESS to fix `systemctl --user`
+grep -q XDG_RUNTIME_DIR $HOME/.bash_profile
+if [ $? -ne 0 ]; then
+	echo "XDG_RUNTIME_DIR=/run/user/`id -u`" >> $HOME/.bash_profile
+	export XDG_RUNTIME_DIR=/run/user/`id -u`
+fi
+grep -q DBUS_SESSION_BUS_ADDRESS $HOME/.bash_profile
+if [ $? -ne 0 ]; then
+	echo "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/`id -u`/bus"
+	export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/`id -u`/bus
+fi
+
 # Validate that user account is set up for podman
 echo "Validating account $ACCT..."
 grep -i $ACCT /etc/subuid
@@ -23,9 +35,10 @@ grep -i $ACCT /etc/subgid
 [ ! -d /home/$ACCT/db-data ] && { echo "Error: /home/$ACCT/db-data doesn't exist for postgres"; exit 1; }
 
 echo "Setting owner/group on /home/$ACCT/db-data..."
-podman unshare chown $ACCT_UID:$ACCT_GID /home/$ACCT/db-data
-[ $? -ne 0 ] && { echo "Error setting owner/group on /home/$ACCT/db-data..."; exi
-t 1; }
+podman unshare chown -R $ACCT_UID:$ACCT_GID /home/$ACCT/db-data
+[ $? -ne 0 ] && { echo "Error setting owner/group on /home/$ACCT/db-data..."; exit 1; }
+
+
 
 echo "Creating pod..."
 podman pod create --name wikijs -p $WIKI_PORTS -p $PG_PORT

@@ -6,6 +6,11 @@ Jenkins data is stored under /home/jenkins
 
 The `jenkins.sh` script will deploy the pod and the Jenkins container and then generate Systemd unit files for each.  These files are installed in `/home/jenkins/.config/systemd/user` and enabled via `systemctl --user enable ...`
 
+## Caveats
+- In the Jenkins image, everything runs as the `jenkins` user (1000), hence the need to do `podman unshare chown -R 1000:1000 /home/jenkins/jenkins` so it has write permissions to /var/jenkins_home inside of the container
+- While it appears that mDNS lookups will fail inside podman containers, entries from `/etc/hosts` on the host are mapped to `/etc/hosts` inside of the container, hosts entries can be used to resolve IP addresses which wouldn't otherwise resolve through regular DNS lookups.
+- The Jenkins Docker-related plugins and `docker` agent in Jenkinsfile doesn't appear to work.  
+
 ## Example
 ```bash
 
