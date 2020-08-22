@@ -9,6 +9,9 @@ ACCT=registry
 ACCT_UID=$(id -u $ACCT)
 ACCT_GID=$(id -g $ACCT)
 
+[ ! -f reg_certs/cert.pem ] && { echo "Error: run cert.sh to generate cert.pem"; exit 1; }
+[ ! -f reg_certs/key.pem ] && { echo "Error: run cert.sh to generate key..pem"; exit 1; }
+
 # If necessary, set XDG_RUNTIME_DIR and DBUS_SESSION_BUS_ADDRESS to fix `systemctl --user`
 grep -q XDG_RUNTIME_DIR $HOME/.bash_profile
 if [ $? -ne 0 ]; then
@@ -45,6 +48,10 @@ podman run \
 	--pod registry \
 	--name regsvr \
 	-v /home/$ACCT/registry:/var/lib/registry \
+	-v /home/$ACCT/reg_certs:/certs \
+	-e REGISTRY_STORAGE_DELETE_ENABLED=true \
+	-e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/cert.pem \
+	-e REGISTRY_HTTP_TLS_KEY=/certs/key.pem \
     --restart=always \
 	registry:2.7
 
