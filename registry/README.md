@@ -1,6 +1,9 @@
 # Multi-architecture Docker registry running under podman
 
-This script creates an insecure private registry
+This script creates an insecure private registry using a self-signed certificate.
+
+## Certificate Creation
+The `create-certs.sh` script creates a certificate for the Docker registry signed by a private root CA.
 
 ## Example
 ```

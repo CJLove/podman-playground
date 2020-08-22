@@ -9,8 +9,8 @@ ACCT=registry
 ACCT_UID=$(id -u $ACCT)
 ACCT_GID=$(id -g $ACCT)
 
-[ ! -f reg_certs/cert.pem ] && { echo "Error: run cert.sh to generate cert.pem"; exit 1; }
-[ ! -f reg_certs/key.pem ] && { echo "Error: run cert.sh to generate key..pem"; exit 1; }
+[ ! -f reg_certs/registry.crt ] && { echo "Error: run create-certs.sh to generate registry.crt"; exit 1; }
+[ ! -f reg_certs/registry.key ] && { echo "Error: run create-certs.sh to generate registry.key"; exit 1; }
 
 # If necessary, set XDG_RUNTIME_DIR and DBUS_SESSION_BUS_ADDRESS to fix `systemctl --user`
 grep -q XDG_RUNTIME_DIR $HOME/.bash_profile
@@ -50,8 +50,8 @@ podman run \
 	-v /home/$ACCT/registry:/var/lib/registry \
 	-v /home/$ACCT/reg_certs:/certs \
 	-e REGISTRY_STORAGE_DELETE_ENABLED=true \
-	-e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/cert.pem \
-	-e REGISTRY_HTTP_TLS_KEY=/certs/key.pem \
+	-e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.crt \
+	-e REGISTRY_HTTP_TLS_KEY=/certs/registry.key \
     --restart=always \
 	registry:2.7
 
@@ -88,4 +88,5 @@ done
 cd -
 
 echo "Registry service running on port $PORT"
+echo "Install reg_certs/ca.crt on all nodes"
 exit 0
