@@ -46,6 +46,7 @@ IP.1  = 192.168.1.129
 IP.2  = 127.0.0.1
 DNS.1 = fir.local
 DNS.2 = fir
+DNS.3 = localhost
 EOF
 
 # Create the certificate authority (CA). This will be a self-signed CA, and this
