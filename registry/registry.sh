@@ -74,7 +74,7 @@ podman run \
 	-e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.crt \
 	-e REGISTRY_HTTP_TLS_KEY=/certs/registry.key \
     --restart=always \
-	registry:2.7
+	registry:latest
 
 [ $? -ne 0 ] && { echo "Error creating regsvr container..."; exit 1; }
 
