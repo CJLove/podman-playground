@@ -1,10 +1,13 @@
 # Simple Nginx Service via Podman
 
-Service runs as user 'nginx' on port 3004.
+Service runs as user 'nginx' on port 3004. A separate container deploying [artstore](https://github.com/CJLove/artstore) is deployed and nginx is configured to proxy http://xxxx:3004/artstore/ to the artstore container.
+
+The `/etc/nginx/config.d/default.conf` file is mounted from the host filesystem into the nginx container.
 
 Content from /home/nginx/www is served by nginx
 
 The `nginx.sh` script will deploy the pod and its container and then generate Systemd unit files for each.  These files are installed in `/home/nginx/.config/systemd/user` and enabled via `systemctl --user enable ...`
+
 
 ## Example
 

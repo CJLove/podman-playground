@@ -44,10 +44,22 @@ podman run \
 	-d \
 	--pod nginx \
 	--name http \
+	-v /home/$ACCT/default.conf:/etc/nginx/conf.d/default.conf \
 	-v /home/$ACCT/www:/usr/share/nginx/html/ \
 	nginx:latest
 
 [ $? -ne 0 ] && { echo "Error creating container..."; exit 1; }
+
+echo "Creating artstore container..."
+podman run \
+	-d \
+	--pod nginx \
+	--name artstore \
+	-v /home/nginx/artstore:/etc/artstore \
+	-v /home/nginx/www:/home/nginx/www \
+	fir.love.io:3005/amd64/artstore:latest
+
+[ $? -ne 0 ] && { echo "Error creating artstore container..."; exit 1; }
 
 echo "Creating $HOME/.config/systemd/user..."
 mkdir -p ~/.config/systemd/user
