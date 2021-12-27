@@ -58,15 +58,21 @@ EOF
 # To put a password on the key, remove the -nodes option.
 #
 # Be sure to update the subject to match your organization.
-openssl req \
-  -new \
-  -newkey rsa:2048 \
-  -days 999 \
-  -nodes \
-  -x509 \
-  -subj "/C=US/ST=CA/L=San Diego/O=Chris Love CA" \
-  -keyout "${DIR}/ca.key" \
-  -out "${DIR}/ca.crt"
+if [ ! -f ${DIR}/ca.key -a ! -f ${DIR}/ca.crt ]; then
+  echo "Generating root CA"
+  openssl req \
+    -new \
+    -newkey rsa:2048 \
+    -days 999 \
+    -nodes \
+    -x509 \
+    -subj "/C=US/ST=CA/L=San Diego/O=Chris Love CA" \
+    -keyout "${DIR}/ca.key" \
+    -out "${DIR}/ca.crt"
+else
+  echo "Using existing root CA"
+fi
+
 #
 # For each server/service you want to secure with your CA, repeat the
 # following steps:
@@ -87,7 +93,7 @@ openssl req \
 # by our CA.
 openssl x509 \
   -req \
-  -days 120 \
+  -days 999 \
   -in "${DIR}/registry.csr" \
   -CA "${DIR}/ca.crt" \
   -CAkey "${DIR}/ca.key" \
