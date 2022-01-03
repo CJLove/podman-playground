@@ -1,0 +1,9 @@
+[Unit]
+Description=Pi-hole Podman container
+Wants=syslog.service
+[Service]
+Restart=always
+ExecStart=/usr/bin/podman start -a pihole
+ExecStop=/usr/bin/podman stop -t 10 pihole
+[Install]
+WantedBy=multi-user.target
