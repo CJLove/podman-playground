@@ -7,3 +7,4 @@ Sample Pod definitions for deploying various services via Podman on Fedora31+
 - Jenkins - jenkins CI/CD
 - Registry - Docker registry
 - PiHole
+- Grafana/Loki

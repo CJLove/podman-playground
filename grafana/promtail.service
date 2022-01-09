@@ -1,0 +1,9 @@
+[Unit]
+Description=Promtail Podman container
+Wants=syslog.service
+[Service]
+Restart=always
+ExecStart=/usr/bin/podman start -a promtail
+ExecStop=/usr/bin/podman stop -t 10 promtail
+[Install]
+WantedBy=multi-user.target
