@@ -8,3 +8,4 @@ Sample Pod definitions for deploying various services via Podman on Fedora31+
 - Registry - Docker registry
 - PiHole
 - Grafana/Loki
+- Uptime-kuma
